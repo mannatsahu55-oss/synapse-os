@@ -4,6 +4,7 @@
   "description": "Synapse Observatory — AI Agent Swarm Observability Backend",
   "main": "index.js",
   "scripts": {
+    "build": "echo 'Build complete - no compilation required for Express server'",
     "start": "node index.js",
     "dev": "node index.js"
   },

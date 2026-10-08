@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "concurrently \"vite\" \"node backend/synapse-observatory/server/index.js\"",
     "build": "vite build",
+    "start": "node backend/synapse-observatory/server/index.js",
     "lint": "oxlint",
     "preview": "vite preview"
   },
