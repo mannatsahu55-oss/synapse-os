@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: sans-serif; background: #eee; }
+    .gallery { display: flex; flex-wrap: wrap; gap: 20px; }
+    .item { background: white; padding: 10px; text-align: center; border-radius: 8px; }
+    img { max-width: 300px; max-height: 300px; display: block; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Image Gallery</h1>
+  <div class="gallery" id="gallery"></div>
+  <script>
+    const images = [
+      "2q3wwgjkgkdquxoiywyyt2rbs.jpeg",
+      "av7ldbmxng9n5vwds5yyvluwqu.png",
+      "boiowq0fmk4swgzzblv098off0u.png",
+      "ci0d2qzhhoyjqyrsf6eziae10.png",
+      "cnkfggbztabumxncpkkjh4apfnu.png",
+      "dfwinhurrspjo5oyubeaja20jhc.png",
+      "frvqykzesipd2sexxurupjzwfkc.jpg",
+      "iszhsgfmk9o7knpadvtko7voa2a.png",
+      "j8vfayd9sisibkf1eldrrzgdm.png",
+      "l03uns5gqkhm2o8hviifw45hz4.png",
+      "lbtxlk1wmcz7grlwdismc4vpa.png",
+      "mc7shro1z7n94lpfxnwajxrbi48.png",
+      "mpkwrldz2kq3ymuppyxexeq4yrs.png",
+      "pqpbvkiigj9pgojtfhcvlonvq.png",
+      "prafnm9bij2fff3c3dbljh1fgqq.png",
+      "qaadvuey0dzktsbbzftk8rzxy.jpg",
+      "qlpanr2sctxibilhsdojf9epx8.png",
+      "qlsxr7cgogecehxg8x27nhyqdg.png",
+      "rbnevfxp0imegqtzg6qpmdm1s.png",
+      "rmjuvouht39hdz1kbwue16zoyse.png",
+      "soyrmvudp6ujrsou9jiodouw3s.png",
+      "ucb9wrsktmm401czi1e8fkux8.png",
+      "v7adlbqyiu2yg9w6sd4v8ldu.png",
+      "w79djdhxuhf5kreegczi5unpu0c.png",
+      "wqszz1c73p5pzvj7uzaejavdiy.png"
+    ];
+    
+    const gallery = document.getElementById('gallery');
+    images.forEach(img => {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `<img src="/images/${img}" alt="${img}"><div>${img}</div>`;
+      gallery.appendChild(div);
+    });
+  </script>
+</body>
+</html>

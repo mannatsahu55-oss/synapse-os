@@ -1,0 +1,409 @@
+/* ═══════════════════════════════════════════
+   OBSERVATORY — Agent Topology Canvas Styles
+   ═══════════════════════════════════════════ */
+
+/* ── React Flow Canvas Override ── */
+.canvas :global(.react-flow__background) {
+  opacity: 0.3;
+}
+
+.canvas :global(.react-flow__edge-path) {
+  stroke-width: 2;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.canvas :global(.react-flow__controls) {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.05);
+}
+
+:global(.dark) .canvas :global(.react-flow__controls) {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.05);
+}
+
+.canvas :global(.react-flow__controls-button) {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .canvas :global(.react-flow__controls-button) {
+  border-color: rgba(255, 255, 255, 0.1);
+  fill: white;
+}
+
+/* ── Agent Node ── */
+.agentNode {
+  min-width: 200px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+:global(.dark) .agentNode {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.06);
+}
+
+.agentNode:hover {
+  transform: translateY(-2px);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.08);
+}
+
+:global(.dark) .agentNode:hover {
+  box-shadow: 8px 8px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Processing state — animated border glow */
+.agentNodeProcessing {
+  animation: processingPulse 2s ease-in-out infinite;
+}
+
+.agentNodeProcessing::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #06b6d4, #3b82f6, #8b5cf6, #06b6d4);
+  background-size: 300% 300%;
+  animation: borderGlow 2s linear infinite;
+  z-index: -1;
+  opacity: 0.6;
+}
+
+.agentNodeProcessing::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: -1;
+}
+
+:global(.dark) .agentNodeProcessing::after {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+@keyframes processingPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+  50% { box-shadow: 0 0 20px 4px rgba(6, 182, 212, 0.3); }
+}
+
+@keyframes borderGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Status indicator dot */
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 0;
+  transition: all 0.3s ease;
+}
+
+.statusIdle {
+  background: #a3a3a3;
+}
+
+.statusProcessing {
+  background: #06b6d4;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+  animation: statusPulse 1.5s ease-in-out infinite;
+}
+
+.statusError {
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+  animation: statusPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Animated Edge ── */
+.edgeActive :global(.react-flow__edge-path) {
+  stroke: #06b6d4;
+  stroke-width: 3;
+  stroke-dasharray: 8 4;
+  animation: edgeFlow 1s linear infinite;
+}
+
+@keyframes edgeFlow {
+  from { stroke-dashoffset: 12; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── Scenario Launcher Bar ── */
+.scenarioBar {
+  position: relative;
+  z-index: 20;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+:global(.dark) .scenarioBar {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.scenarioCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}
+
+:global(.dark) .scenarioCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.scenarioCard:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.9);
+  transform: translateY(-1px);
+}
+
+:global(.dark) .scenarioCard:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.scenarioCardActive {
+  background: rgba(6, 182, 212, 0.1);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: #0891b2;
+}
+
+:global(.dark) .scenarioCardActive {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: #22d3ee;
+}
+
+.scenarioCardDisabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ── Detail Panel (Slide-in) ── */
+.detailPanel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 380px;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.06);
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+:global(.dark) .detailPanel {
+  background: rgba(0, 0, 0, 0.85);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: -8px 0 24px rgba(255, 255, 255, 0.03);
+}
+
+.detailPanelOpen {
+  transform: translateX(0);
+}
+
+/* ── Timeline Panel ── */
+.timelinePanel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 0;
+  overflow: hidden;
+}
+
+:global(.dark) .timelinePanel {
+  background: rgba(0, 0, 0, 0.85);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.timelinePanelOpen {
+  max-height: 220px;
+}
+
+.timelineTrack {
+  display: flex;
+  gap: 2px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.timelineTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.timelineEntry {
+  flex-shrink: 0;
+  width: 200px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+:global(.dark) .timelineEntry {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.timelineEntryActive {
+  border-color: rgba(6, 182, 212, 0.4);
+  background: rgba(6, 182, 212, 0.05);
+}
+
+.timelineEntryCompleted {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.timelineConnector {
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  width: 4px;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+:global(.dark) .timelineConnector {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Activity Log (terminal style) ── */
+.activityLog {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  padding: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.activityLog::-webkit-scrollbar {
+  width: 4px;
+}
+
+.activityLog::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.activityLog::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+:global(.dark) .activityLog::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.logEntry {
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  animation: logFadeIn 0.3s ease-out;
+}
+
+:global(.dark) .logEntry {
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+@keyframes logFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Cost Tracker ── */
+.costBar {
+  height: 4px;
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+:global(.dark) .costBar {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.costBarFill {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Handle Styles ── */
+.canvas :global(.react-flow__handle) {
+  width: 8px;
+  height: 8px;
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+:global(.dark) .canvas :global(.react-flow__handle) {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .detailPanel {
+    width: 100%;
+  }
+  
+  .scenarioBar {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  
+  .scenarioBar::-webkit-scrollbar {
+    display: none;
+  }
+}

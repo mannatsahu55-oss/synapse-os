@@ -1,0 +1,232 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════
+   SYNAPSE OBSERVATORY — Global Styles
+   ═══════════════════════════════════════════════ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: transparent;
+  color: #111827; /* text-gray-900 */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* ── Glassmorphism Card ── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.glass-card-sm {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+/* ── Status Dot ── */
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 0;
+  display: inline-block;
+}
+.status-dot.green {
+  background: #10B981;
+}
+.status-dot.amber {
+  background: #F59E0B;
+}
+.status-dot.red {
+  background: #EF4444;
+}
+.status-dot.gray {
+  background: #6B7280;
+}
+
+/* ── Rogue Card ── */
+.rogue-card {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  background: rgba(254, 242, 242, 0.95) !important;
+  box-shadow: 8px 8px 0 rgba(239, 68, 68, 0.15) !important;
+}
+
+/* ── Cascade Warning Card ── */
+.cascade-card {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  background: rgba(255, 251, 235, 0.95) !important;
+  box-shadow: 8px 8px 0 rgba(245, 158, 11, 0.1) !important;
+}
+
+/* ── SVG Topology Animations ── */
+.flow-line {
+  stroke-dasharray: 4 8;
+  stroke-linecap: round;
+  animation: flowDots 2s linear infinite;
+}
+.flow-line-fast {
+  stroke-dasharray: 4 8;
+  stroke-linecap: round;
+  animation: flowDots 0.4s linear infinite;
+}
+.flow-line-stopped {
+  stroke-dasharray: 4 8;
+  stroke-linecap: round;
+  opacity: 0.2;
+}
+
+@keyframes flowDots {
+  from { stroke-dashoffset: 12; }
+  to { stroke-dashoffset: 0; }
+}
+
+.node-pulse {
+  animation: nodePulse 2s ease-in-out infinite;
+}
+@keyframes nodePulse {
+  0%, 100% { r: 36; }
+  50% { r: 38; }
+}
+
+.node-rogue {
+  animation: nodeRogue 0.8s ease-in-out infinite alternate;
+}
+@keyframes nodeRogue {
+  0% { filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.4)); }
+  100% { filter: drop-shadow(0 0 16px rgba(239, 68, 68, 0.8)); }
+}
+
+/* ── Kill Switch ── */
+.kill-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.kill-button::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px dashed rgba(239, 68, 68, 0.4);
+  animation: spin 8s linear infinite;
+}
+.kill-button:hover::before {
+  border-color: rgba(239, 68, 68, 0.8);
+  animation: spin 3s linear infinite;
+}
+.kill-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.4), 0 0 60px rgba(239, 68, 68, 0.15);
+}
+.kill-button:active {
+  transform: scale(0.95);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Hallucination Alert ── */
+.hallucination-alert {
+  background: #ffffff;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.1), 0 8px 10px -6px rgba(239, 68, 68, 0.05);
+  animation: alertFlash 2s ease-in-out infinite alternate;
+}
+
+@keyframes alertFlash {
+  0% { border-color: rgba(239, 68, 68, 0.2); }
+  100% { border-color: rgba(239, 68, 68, 0.5); }
+}
+
+/* ── Event Feed ── */
+.event-row {
+  animation: eventSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+@keyframes eventSlideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Confidence Bar ── */
+.confidence-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+.confidence-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s ease;
+}
+
+/* ── Badge Styles ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── Flash Overlay ── */
+.kill-flash {
+  animation: killFlash 0.4s ease-out forwards;
+}
+@keyframes killFlash {
+  0% { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
+/* ── Recharts Custom ── */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(0, 0, 0, 0.04) !important;
+}
+.recharts-text {
+  fill: rgba(0, 0, 0, 0.4) !important;
+  font-size: 11px !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* ── Background Grid Pattern ── */
+.bg-grid {
+  /* Removed heavy grid for light theme */
+}
