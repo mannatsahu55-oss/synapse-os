@@ -224,7 +224,7 @@ const ImportProjectModal = ({ isOpen, onClose, onImport, addToast }) => {
           <label className="text-xs font-semibold uppercase tracking-wider text-black/60 dark:text-white/60 mb-2 block">
             Select Uplink Type
           </label>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => handleTypeChange('n8n')}
@@ -918,13 +918,13 @@ const CommandCenter = () => {
     <div className="flex flex-col h-full overflow-hidden bg-transparent font-sans text-black dark:text-white transition-colors duration-500">
       
       {/* Top Navigation Bar - Glassmorphic */}
-      <div className="h-16 px-6 flex items-center justify-between border-b border-black/10 dark:border-white/10 shrink-0 bg-white/70 dark:bg-black/70 backdrop-blur-md z-20 relative transition-colors duration-500">
+      <div className="h-auto min-h-16 py-3 px-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-black/10 dark:border-white/10 shrink-0 bg-white/70 dark:bg-black/70 backdrop-blur-md z-20 relative transition-colors duration-500">
         <div className="flex items-center gap-4">
-           <div className="font-display font-bold text-xl tracking-tighter text-black dark:text-white">Command Center</div>
+           <div className="font-display font-bold text-lg sm:text-xl tracking-tighter text-black dark:text-white">Command Center</div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center bg-white/50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-none py-1.5 px-3 focus-within:border-black dark:focus-within:border-white transition-colors w-60">
-            <Search size={14} className="text-black/50 dark:text-white/50" />
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <div className="flex items-center bg-white/50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-none py-1.5 px-3 focus-within:border-black dark:focus-within:border-white transition-colors flex-1 sm:flex-initial sm:w-60 min-w-[140px]">
+            <Search size={14} className="text-black/50 dark:text-white/50 shrink-0" />
             <input
               type="text"
               placeholder="Search..."
@@ -933,7 +933,7 @@ const CommandCenter = () => {
               className="bg-transparent border-none outline-none text-black dark:text-white text-sm ml-2 w-full placeholder:text-black/30 dark:placeholder:text-white/30"
             />
             {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white">
+              <button onClick={() => setSearchTerm('')} className="text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white shrink-0">
                 <X size={14} />
               </button>
             )}
@@ -941,31 +941,31 @@ const CommandCenter = () => {
 
           <button 
             onClick={() => setShowImportModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black text-xs font-semibold rounded-none hover:bg-black/85 dark:hover:bg-white/85 transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black text-xs font-semibold rounded-none hover:bg-black/85 dark:hover:bg-white/85 transition-colors shadow-sm shrink-0"
           >
             <Plus size={14} /> Import Project
           </button>
 
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-none border border-black/10 dark:border-white/10 text-xs font-medium text-black/70 dark:text-white/70 bg-white/50 dark:bg-black/50 hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+          <button className="flex items-center gap-2 px-3 py-1.5 rounded-none border border-black/10 dark:border-white/10 text-xs font-medium text-black/70 dark:text-white/70 bg-white/50 dark:bg-black/50 hover:bg-black/5 dark:hover:bg-white/10 transition-colors shrink-0">
             <Activity size={13} className="text-emerald-500" />
             System Live
           </button>
         </div>
       </div>
 
-      <div className="flex-grow overflow-y-auto no-scrollbar p-6 bg-transparent relative z-10">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="flex-grow overflow-y-auto no-scrollbar p-3 sm:p-6 bg-transparent relative z-10">
+        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
           
           {/* Top Metric Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500">
-              <div className="text-xs font-medium text-black/60 dark:text-white/60 mb-2">Active Agents</div>
-              <div className="text-3xl font-display font-bold tracking-tighter text-black dark:text-white">{activeAgents}</div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div className="p-3.5 sm:p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500">
+              <div className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 mb-2">Active Agents</div>
+              <div className="text-2xl sm:text-3xl font-display font-bold tracking-tighter text-black dark:text-white">{activeAgents}</div>
             </div>
             
-            <div className="p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500 border-l-2 border-l-blue-500">
-              <div className="text-xs font-medium text-black/60 dark:text-white/60 mb-2">Monitored Projects</div>
-              <div className="text-3xl font-display font-bold tracking-tighter text-black dark:text-white flex items-center justify-between">
+            <div className="p-3.5 sm:p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500 border-l-2 border-l-blue-500">
+              <div className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 mb-2">Monitored Projects</div>
+              <div className="text-2xl sm:text-3xl font-display font-bold tracking-tighter text-black dark:text-white flex items-center justify-between">
                 <span>{connectedProjects.length}</span>
                 <span className="text-xs font-mono font-normal text-emerald-600 dark:text-emerald-400">
                   {connectedProjects.filter(p => p.status === 'ONLINE').length} live
@@ -973,19 +973,19 @@ const CommandCenter = () => {
               </div>
             </div>
 
-            <div className="p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500">
-              <div className="text-xs font-medium text-black/60 dark:text-white/60 mb-2">Total Actions</div>
-              <div className="text-3xl font-display font-bold tracking-tighter text-black dark:text-white">{totalAgentActions}</div>
+            <div className="p-3.5 sm:p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500">
+              <div className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 mb-2">Total Actions</div>
+              <div className="text-2xl sm:text-3xl font-display font-bold tracking-tighter text-black dark:text-white">{totalAgentActions}</div>
             </div>
 
-            <div className="p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500">
-              <div className="text-xs font-medium text-black/60 dark:text-white/60 mb-2">Total Leases</div>
-              <div className="text-3xl font-display font-bold tracking-tighter text-black dark:text-white">{leases.length}</div>
+            <div className="p-3.5 sm:p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500">
+              <div className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 mb-2">Total Leases</div>
+              <div className="text-2xl sm:text-3xl font-display font-bold tracking-tighter text-black dark:text-white">{leases.length}</div>
             </div>
 
-            <div className="p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500">
-              <div className="text-xs font-medium text-black/60 dark:text-white/60 mb-2">Telemetry Bus</div>
-              <div className="text-xl font-mono font-bold tracking-tight text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+            <div className="p-3.5 sm:p-5 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-none shadow-[8px_8px_0_rgba(0,0,0,0.05)] dark:shadow-[8px_8px_0_rgba(255,255,255,0.05)] flex flex-col justify-between transition-colors duration-500 col-span-2 md:col-span-1">
+              <div className="text-[10px] sm:text-xs font-medium text-black/60 dark:text-white/60 mb-2">Telemetry Bus</div>
+              <div className="text-lg sm:text-xl font-mono font-bold tracking-tight text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 ONLINE
               </div>
@@ -993,17 +993,17 @@ const CommandCenter = () => {
           </div>
 
           {/* Inner Header Tabs */}
-          <div className="flex justify-between items-center border-b border-black/10 dark:border-white/10 pb-4">
-            <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-black/10 dark:border-white/10 pb-4 gap-3">
+            <div className="flex gap-3 sm:gap-4 overflow-x-auto whitespace-nowrap pb-1 no-scrollbar">
               <button 
                 onClick={() => setSubTab('tenancy')}
-                className={`pb-2 text-sm font-medium transition-all border-b-2 ${subTab === 'tenancy' ? 'border-black dark:border-white text-black dark:text-white' : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'}`}
+                className={`pb-2 text-xs sm:text-sm font-medium transition-all border-b-2 shrink-0 ${subTab === 'tenancy' ? 'border-black dark:border-white text-black dark:text-white' : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'}`}
               >
                 Tenancy Sync
               </button>
               <button 
                 onClick={() => setSubTab('projects')}
-                className={`pb-2 text-sm font-medium transition-all border-b-2 flex items-center gap-2 ${subTab === 'projects' ? 'border-black dark:border-white text-black dark:text-white' : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'}`}
+                className={`pb-2 text-xs sm:text-sm font-medium transition-all border-b-2 flex items-center gap-2 shrink-0 ${subTab === 'projects' ? 'border-black dark:border-white text-black dark:text-white' : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'}`}
               >
                 <span>Connected Projects & n8n</span>
                 <span className="px-1.5 py-0.2 text-[10px] font-mono rounded-none bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-bold">
@@ -1012,18 +1012,18 @@ const CommandCenter = () => {
               </button>
               <button 
                 onClick={() => setSubTab('abstraction')}
-                className={`pb-2 text-sm font-medium transition-all border-b-2 ${subTab === 'abstraction' ? 'border-black dark:border-white text-black dark:text-white' : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'}`}
+                className={`pb-2 text-xs sm:text-sm font-medium transition-all border-b-2 shrink-0 ${subTab === 'abstraction' ? 'border-black dark:border-white text-black dark:text-white' : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'}`}
               >
                 Data Abstraction
               </button>
               <button 
                 onClick={() => setSubTab('contacts')}
-                className={`pb-2 text-sm font-medium transition-all border-b-2 ${subTab === 'contacts' ? 'border-black dark:border-white text-black dark:text-white' : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'}`}
+                className={`pb-2 text-xs sm:text-sm font-medium transition-all border-b-2 shrink-0 ${subTab === 'contacts' ? 'border-black dark:border-white text-black dark:text-white' : 'border-transparent text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'}`}
               >
                 Neural Roster
               </button>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
               <button
                 onClick={() => setShowImportModal(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-colors text-xs font-semibold rounded-none"

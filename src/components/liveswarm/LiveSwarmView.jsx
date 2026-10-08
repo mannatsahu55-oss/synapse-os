@@ -73,12 +73,12 @@ const formatTokens = (n) => {
 // ── Stat Card ──
 function StatCard({ icon: Icon, label, value, color, subtext }) {
   return (
-    <div className="swarm-glass-card p-5 flex flex-col justify-between rounded-lg">
+    <div className="swarm-glass-card p-3.5 sm:p-5 flex flex-col justify-between rounded-lg">
       <div className="flex justify-between items-center mb-2">
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</div>
-        <Icon size={14} style={{ color }} className="opacity-50" />
+        <div className="text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</div>
+        <Icon size={14} style={{ color }} className="opacity-50 shrink-0" />
       </div>
-      <div className="text-3xl font-bold tracking-tighter text-gray-900">{value}</div>
+      <div className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tighter text-gray-900 truncate">{value}</div>
       {subtext && <div className="text-[10px] text-gray-500 mt-1 truncate">{subtext}</div>}
     </div>
   );
@@ -119,17 +119,17 @@ function CostTracker({ totalCost, costColor, burnRatePerMin, systemHealth }) {
   const isCritical = systemHealth === 'critical';
 
   return (
-    <div className={`swarm-glass-card p-5 flex flex-col justify-between transition-all duration-500 rounded-lg ${isCritical ? 'border-red-500/50' : ''}`}>
+    <div className={`swarm-glass-card p-3.5 sm:p-5 flex flex-col justify-between transition-all duration-500 rounded-lg ${isCritical ? 'border-red-500/50' : ''}`}>
       <div className="flex justify-between items-center mb-2">
-        <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Total Cost</div>
-        <DollarSign size={14} style={{ color: costColor }} className="opacity-50" />
+        <div className="text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">Total Cost</div>
+        <DollarSign size={14} style={{ color: costColor }} className="opacity-50 shrink-0" />
       </div>
       <div className="flex items-baseline gap-0.5">
-        <span className="text-3xl font-bold tracking-tighter transition-colors duration-500" style={{ color: costColor }}>${dollars}</span>
-        <span className="text-xl font-bold tracking-tighter transition-colors duration-500" style={{ color: costColor, opacity: 0.7 }}>.{cents}</span>
+        <span className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tighter transition-colors duration-500" style={{ color: costColor }}>${dollars}</span>
+        <span className="text-sm sm:text-lg lg:text-xl font-bold tracking-tighter transition-colors duration-500" style={{ color: costColor, opacity: 0.7 }}>.{cents}</span>
       </div>
       <div className="flex items-center gap-1 mt-1">
-        <TrendingUp size={8} className={isCritical ? 'text-red-600' : 'text-gray-500'} />
+        <TrendingUp size={10} className={isCritical ? 'text-red-600 shrink-0' : 'text-gray-500 shrink-0'} />
         <div className={`text-[10px] truncate ${isCritical ? 'text-red-600 font-medium' : 'text-gray-500'}`}>${burnRatePerMin.toFixed(2)}/min</div>
       </div>
     </div>
@@ -303,38 +303,40 @@ function SwarmTopology({ agents, selectedAgent, setSelectedAgent }) {
   }), [agents]);
 
   return (
-    <div className="swarm-glass-card p-5 rounded-lg">
-      <svg viewBox="0 0 860 160" className="w-full" style={{ maxHeight: '160px' }}>
-        <defs>
-          <marker id="swarmArrowGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#10B981" opacity="0.5" /></marker>
-          <marker id="swarmArrowRed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#EF4444" opacity="0.7" /></marker>
-          <marker id="swarmArrowAmber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#F59E0B" opacity="0.5" /></marker>
-          <marker id="swarmArrowGray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#374151" opacity="0.3" /></marker>
-        </defs>
-        {linkData.map((link, i) => {
-          const markerColor = link.color === '#EF4444' ? 'Red' : link.color === '#F59E0B' ? 'Amber' : link.color === '#374151' ? 'Gray' : 'Green';
-          return (
-            <g key={i}>
-              <line x1={link.x1} y1={link.y1} x2={link.x2} y2={link.y2} stroke={link.color} strokeWidth="1" opacity="0.15" />
-              <line x1={link.x1} y1={link.y1} x2={link.x2} y2={link.y2} stroke={link.color} strokeWidth="2.5" className={link.lineClass} markerEnd={`url(#swarmArrow${markerColor})`} />
-            </g>
-          );
-        })}
-        {nodeData.map(node => {
-          const fill = STATUS_FILL[node.status] || STATUS_FILL.idle;
-          const isRogue = node.status === 'critical';
-          const isKilled = node.status === 'killed';
-          return (
-            <g key={node.id} onClick={() => setSelectedAgent(node.isSelected ? null : node.id)} style={{ cursor: 'pointer', transition: 'opacity 0.2s' }} opacity={node.isDimmed ? 0.3 : 1} className="hover:opacity-100">
-              {!isKilled && <circle cx={node.x} cy={node.y} r="42" fill="none" stroke={fill} strokeWidth="1" opacity={isRogue ? 0.4 : 0.15} className={isRogue ? 'swarm-node-rogue' : ''} />}
-              <circle cx={node.x} cy={node.y} r="32" fill={`${fill}20`} stroke={fill} strokeWidth="2" className={!isKilled && !isRogue ? 'swarm-node-pulse' : isRogue ? 'swarm-node-rogue' : ''} />
-              <text x={node.x} y={node.y + 1} textAnchor="middle" dominantBaseline="central" fill={isKilled ? '#6B7280' : '#000000'} fontSize="16" fontWeight="700" fontFamily="Inter, sans-serif">{node.label[0]}</text>
-              <text x={node.x} y={node.y + 50} textAnchor="middle" fill={isKilled ? '#6B7280' : '#4B5563'} fontSize="10" fontWeight="500" fontFamily="Inter, sans-serif">{node.name}</text>
-              <text x={node.x} y={node.y + 63} textAnchor="middle" fill={fill} fontSize="8" fontWeight="600" fontFamily="Inter, sans-serif" letterSpacing="0.5">{node.status.toUpperCase()}</text>
-            </g>
-          );
-        })}
-      </svg>
+    <div className="swarm-glass-card p-3 sm:p-5 rounded-lg overflow-hidden">
+      <div className="w-full overflow-x-auto no-scrollbar">
+        <svg viewBox="0 0 860 160" className="w-full min-w-[500px] sm:min-w-full" style={{ maxHeight: '160px' }}>
+          <defs>
+            <marker id="swarmArrowGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#10B981" opacity="0.5" /></marker>
+            <marker id="swarmArrowRed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#EF4444" opacity="0.7" /></marker>
+            <marker id="swarmArrowAmber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#F59E0B" opacity="0.5" /></marker>
+            <marker id="swarmArrowGray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#374151" opacity="0.3" /></marker>
+          </defs>
+          {linkData.map((link, i) => {
+            const markerColor = link.color === '#EF4444' ? 'Red' : link.color === '#F59E0B' ? 'Amber' : link.color === '#374151' ? 'Gray' : 'Green';
+            return (
+              <g key={i}>
+                <line x1={link.x1} y1={link.y1} x2={link.x2} y2={link.y2} stroke={link.color} strokeWidth="1" opacity="0.15" />
+                <line x1={link.x1} y1={link.y1} x2={link.x2} y2={link.y2} stroke={link.color} strokeWidth="2.5" className={link.lineClass} markerEnd={`url(#swarmArrow${markerColor})`} />
+              </g>
+            );
+          })}
+          {nodeData.map(node => {
+            const fill = STATUS_FILL[node.status] || STATUS_FILL.idle;
+            const isRogue = node.status === 'critical';
+            const isKilled = node.status === 'killed';
+            return (
+              <g key={node.id} onClick={() => setSelectedAgent(node.isSelected ? null : node.id)} style={{ cursor: 'pointer', transition: 'opacity 0.2s' }} opacity={node.isDimmed ? 0.3 : 1} className="hover:opacity-100">
+                {!isKilled && <circle cx={node.x} cy={node.y} r="42" fill="none" stroke={fill} strokeWidth="1" opacity={isRogue ? 0.4 : 0.15} className={isRogue ? 'swarm-node-rogue' : ''} />}
+                <circle cx={node.x} cy={node.y} r="32" fill={`${fill}20`} stroke={fill} strokeWidth="2" className={!isKilled && !isRogue ? 'swarm-node-pulse' : isRogue ? 'swarm-node-rogue' : ''} />
+                <text x={node.x} y={node.y + 1} textAnchor="middle" dominantBaseline="central" fill={isKilled ? '#6B7280' : '#000000'} fontSize="16" fontWeight="700" fontFamily="Inter, sans-serif">{node.label[0]}</text>
+                <text x={node.x} y={node.y + 50} textAnchor="middle" fill={isKilled ? '#6B7280' : '#4B5563'} fontSize="10" fontWeight="500" fontFamily="Inter, sans-serif">{node.name}</text>
+                <text x={node.x} y={node.y + 63} textAnchor="middle" fill={fill} fontSize="8" fontWeight="600" fontFamily="Inter, sans-serif" letterSpacing="0.5">{node.status.toUpperCase()}</text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
     </div>
   );
 }
@@ -458,19 +460,34 @@ function MaintenancePanel({ agents, resumeAgent }) {
   const pausedAgents = Object.values(agents).filter(a => a.status === 'paused');
   if (pausedAgents.length === 0) return null;
   return (
-    <div className="swarm-glass-card p-5 rounded-lg border border-amber-500/30 bg-amber-50/50">
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-black/10">
-        <div className="flex items-center gap-2"><Wrench size={16} className="text-amber-600" /><h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">System Maintenance Required</h3></div>
-        <span className="swarm-badge border border-amber-500/30 bg-amber-500/10 text-amber-700">{pausedAgents.length} Agent{pausedAgents.length > 1 ? 's' : ''} Paused</span>
+    <div className="swarm-glass-card p-4 sm:p-5 rounded-lg border border-amber-500/30 bg-amber-50/50">
+      <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 mb-4 pb-3 border-b border-black/10">
+        <div className="flex items-center gap-2">
+          <Wrench size={16} className="text-amber-600 shrink-0" />
+          <h3 className="text-xs sm:text-sm font-bold text-gray-900 uppercase tracking-wider">System Maintenance Required</h3>
+        </div>
+        <span className="swarm-badge border border-amber-500/30 bg-amber-500/10 text-amber-700 shrink-0">
+          {pausedAgents.length} Agent{pausedAgents.length > 1 ? 's' : ''} Paused
+        </span>
       </div>
       <div className="space-y-3">
         {pausedAgents.map(agent => (
-          <div key={agent.agentId} className="flex items-center justify-between bg-white/80 p-3 rounded-lg border border-black/5 shadow-sm">
+          <div key={agent.agentId} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white/80 p-3 sm:p-3.5 rounded-lg border border-black/5 shadow-sm">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1"><span className="text-sm font-bold text-gray-900">{agent.agentName}</span></div>
-              <div className="flex items-center gap-1.5 text-xs text-gray-600"><AlertTriangle size={12} className="text-amber-500 flex-shrink-0" /><span className="truncate">{agent.pauseReason || 'Auto-Safeguard Triggered'}</span></div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-sm font-bold text-gray-900">{agent.agentName}</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                <AlertTriangle size={12} className="text-amber-500 shrink-0" />
+                <span className="truncate">{agent.pauseReason || 'Auto-Safeguard Triggered'}</span>
+              </div>
             </div>
-            <button onClick={() => resumeAgent(agent.agentId)} className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider rounded-md shadow-sm transition-colors ml-4"><PlayCircle size={14} />Fix & Resume</button>
+            <button 
+              onClick={() => resumeAgent(agent.agentId)} 
+              className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider rounded-md shadow-sm transition-colors ml-0 sm:ml-4"
+            >
+              <PlayCircle size={14} />Fix & Resume
+            </button>
           </div>
         ))}
       </div>
@@ -500,24 +517,24 @@ function KillSwitch({ killAll, restartAll, allKilled, systemHealth, triggerRogue
   };
 
   return (
-    <div className="swarm-glass-card p-6 mb-6">
+    <div className="swarm-glass-card p-4 sm:p-6 mb-6">
       {flashActive && <div className="fixed inset-0 bg-red-500/10 pointer-events-none z-50 swarm-kill-flash" />}
-      <div className="flex flex-col gap-5">
-        <div className="flex items-center justify-between border-b border-black/10 pb-3">
+      <div className="flex flex-col gap-4 sm:gap-5">
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 border-b border-black/10 pb-3">
           <div className="flex items-center gap-2"><ShieldAlert size={16} className={isCritical ? 'text-red-600' : 'text-black/60'} /><h3 className="text-sm font-semibold tracking-tight text-black">Emergency Controls</h3></div>
-          <button onClick={triggerRogue} className="flex items-center gap-1 text-[10px] uppercase font-bold text-gray-400 hover:text-amber-500 transition-colors" title="Trigger rogue event"><Zap size={12} />Demo: Force Cascade</button>
+          <button onClick={triggerRogue} className="flex items-center gap-1 text-[10px] uppercase font-bold text-gray-400 hover:text-amber-500 transition-colors shrink-0" title="Trigger rogue event"><Zap size={12} />Demo: Force Cascade</button>
         </div>
         <div className="w-full">
           {!allKilled ? (
-            <button onClick={handleKill} disabled={isProcessing} className={`w-full h-16 rounded-none flex items-center justify-center gap-3 transition-colors disabled:opacity-50 ${isCritical ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-white border border-red-600/30 hover:bg-red-50 text-red-600'}`}><StopCircle size={20} /><span className="text-sm font-bold tracking-widest uppercase">Terminate Swarm</span></button>
+            <button onClick={handleKill} disabled={isProcessing} className={`w-full h-14 sm:h-16 rounded-md flex items-center justify-center gap-2 sm:gap-3 transition-colors disabled:opacity-50 ${isCritical ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-white border border-red-600/30 hover:bg-red-50 text-red-600'}`}><StopCircle size={20} /><span className="text-xs sm:text-sm font-bold tracking-widest uppercase">Terminate Swarm</span></button>
           ) : (
-            <div className="flex gap-4">
-              <div className="flex-1 h-16 rounded-none bg-black/5 border border-black/10 flex items-center justify-center gap-3 text-black/60"><StopCircle size={20} /><span className="text-sm font-bold tracking-widest uppercase">Terminated</span></div>
-              <button onClick={handleRestart} disabled={isProcessing} className="flex-1 h-16 rounded-none bg-black text-white hover:bg-black/80 flex items-center justify-center gap-3 transition-colors disabled:opacity-50"><RotateCcw size={20} /><span className="text-sm font-bold tracking-widest uppercase">Restart Swarm</span></button>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex-1 h-12 sm:h-16 rounded-md bg-black/5 border border-black/10 flex items-center justify-center gap-2 sm:gap-3 text-black/60"><StopCircle size={18} /><span className="text-xs sm:text-sm font-bold tracking-widest uppercase">Terminated</span></div>
+              <button onClick={handleRestart} disabled={isProcessing} className="flex-1 h-12 sm:h-16 rounded-md bg-black text-white hover:bg-black/80 flex items-center justify-center gap-2 sm:gap-3 transition-colors disabled:opacity-50"><RotateCcw size={18} /><span className="text-xs sm:text-sm font-bold tracking-widest uppercase">Restart Swarm</span></button>
             </div>
           )}
         </div>
-        <p className="text-[10px] font-mono text-black/50 uppercase tracking-widest">
+        <p className="text-[9px] sm:text-[10px] font-mono text-black/50 uppercase tracking-widest">
           {allKilled ? '[SYS] Swarm offline — all agents terminated' : isCritical ? '[WARN] Critical state detected — kill switch armed' : '[INFO] All systems operational — kill switch on standby'}
         </p>
       </div>
@@ -541,22 +558,22 @@ function HallucinationAlert({ alerts, agents, systemStatus, killAgent, killAll, 
   const burnRate = systemStatus.burnRatePerSec || 5;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
-      <div className={`max-w-4xl mx-auto rounded-xl p-5 transition-all duration-500 bg-red-50/95 backdrop-blur-md border border-red-500/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] ${isVisible ? 'animate-slide-down' : 'opacity-0 -translate-y-full'}`}>
+    <div className="fixed top-0 left-0 right-0 z-50 px-2 sm:px-4 pt-2 sm:pt-4">
+      <div className={`max-w-4xl mx-auto rounded-xl p-4 sm:p-5 transition-all duration-500 bg-red-50/95 backdrop-blur-md border border-red-500/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] ${isVisible ? 'animate-slide-down' : 'opacity-0 -translate-y-full'}`}>
         <button onClick={() => setDismissed(true)} className="absolute top-3 right-3 w-7 h-7 rounded-lg border border-black/5 bg-white/80 hover:bg-black/5 flex items-center justify-center transition-colors shadow-sm"><X size={14} className="text-gray-500" /></button>
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-lg border border-red-500/20 bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-0.5"><Skull size={24} className="text-red-500 animate-pulse" /></div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2"><AlertTriangle size={16} className="text-red-600" /><h2 className="text-base font-bold text-red-600 tracking-wide">HALLUCINATION CASCADE DETECTED</h2></div>
-            <p className="text-sm text-gray-700 leading-relaxed mb-3"><strong className="text-red-600">Agent Gamma (Decision Agent)</strong> has entered an infinite reasoning loop.{cascadeAgent && <span> <strong className="text-amber-600">Agent Delta (Execution Agent)</strong> is receiving corrupted data.</span>}</p>
-            <div className="flex flex-wrap gap-4 mb-4">
-              <div className="bg-white/80 border border-red-500/20 rounded-lg px-4 py-3"><p className="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 font-medium">Confidence</p><p className="text-xl font-bold font-mono text-red-600">{((rogueAgent?.confidenceScore || 0.18) * 100).toFixed(0)}%</p></div>
-              <div className="bg-white/80 border border-red-500/20 rounded-lg px-4 py-3"><p className="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 font-medium">Burn Rate</p><p className="text-xl font-bold font-mono text-red-600">${burnRate.toFixed(2)}/sec</p></div>
-              <div className="bg-white/80 border border-red-500/20 rounded-lg px-4 py-3"><p className="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 font-medium">Projected Hourly</p><p className="text-xl font-bold font-mono text-red-600">${Math.round(burnRate * 3600).toLocaleString()}</p></div>
+        <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg border border-red-500/20 bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5"><Skull size={20} className="text-red-500 animate-pulse" /></div>
+          <div className="flex-1 min-w-0 w-full">
+            <div className="flex items-center gap-2 mb-2"><AlertTriangle size={16} className="text-red-600 shrink-0" /><h2 className="text-sm sm:text-base font-bold text-red-600 tracking-wide">HALLUCINATION CASCADE DETECTED</h2></div>
+            <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-3"><strong className="text-red-600">Agent Gamma (Decision Agent)</strong> has entered an infinite reasoning loop.{cascadeAgent && <span> <strong className="text-amber-600">Agent Delta (Execution Agent)</strong> is receiving corrupted data.</span>}</p>
+            <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-4 mb-4">
+              <div className="bg-white/80 border border-red-500/20 rounded-lg p-2 sm:px-4 sm:py-3 text-center sm:text-left"><p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 font-medium">Confidence</p><p className="text-base sm:text-xl font-bold font-mono text-red-600">{((rogueAgent?.confidenceScore || 0.18) * 100).toFixed(0)}%</p></div>
+              <div className="bg-white/80 border border-red-500/20 rounded-lg p-2 sm:px-4 sm:py-3 text-center sm:text-left"><p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 font-medium">Burn Rate</p><p className="text-base sm:text-xl font-bold font-mono text-red-600">${burnRate.toFixed(2)}/s</p></div>
+              <div className="bg-white/80 border border-red-500/20 rounded-lg p-2 sm:px-4 sm:py-3 text-center sm:text-left"><p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 font-medium">Projected</p><p className="text-base sm:text-xl font-bold font-mono text-red-600">${Math.round(burnRate * 3600).toLocaleString()}</p></div>
             </div>
-            <div className="flex items-center gap-3">
-              <button onClick={async () => { if (rogueAgent) { await killAgent(rogueAgent.agentId); clearAlerts(); setDismissed(true); } }} className="px-6 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-bold uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm"><StopCircle size={16} />Kill Rogue Agent</button>
-              <button onClick={async () => { await killAll(); clearAlerts(); setDismissed(true); }} className="px-6 py-2.5 rounded-lg bg-white hover:bg-black/5 border border-black/10 text-black text-sm font-bold uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm"><StopCircle size={16} />Kill All Agents</button>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+              <button onClick={async () => { if (rogueAgent) { await killAgent(rogueAgent.agentId); clearAlerts(); setDismissed(true); } }} className="px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-sm"><StopCircle size={16} />Kill Rogue Agent</button>
+              <button onClick={async () => { await killAll(); clearAlerts(); setDismissed(true); }} className="px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg bg-white hover:bg-black/5 border border-black/10 text-black text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-sm"><StopCircle size={16} />Kill All Agents</button>
             </div>
           </div>
         </div>
@@ -576,15 +593,15 @@ function HrsDetectionPanel({ hrsScores, agents }) {
   const anyWarning = scores.some(s => s.level !== 'nominal');
 
   return (
-    <div className={`swarm-glass-card p-5 rounded-lg transition-all duration-300 ${anyWarning ? 'border-amber-500/30' : ''}`}>
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-black/10">
+    <div className={`swarm-glass-card p-4 sm:p-5 rounded-lg transition-all duration-300 ${anyWarning ? 'border-amber-500/30' : ''}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-black/10">
         <div className="flex items-center gap-2">
-          <Shield size={16} className={anyWarning ? 'text-amber-600' : 'text-emerald-600'} />
-          <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Hallucination Detection Engine</h3>
+          <Shield size={16} className={anyWarning ? 'text-amber-600 shrink-0' : 'text-emerald-600 shrink-0'} />
+          <h3 className="text-xs sm:text-sm font-bold text-gray-900 uppercase tracking-wider">Hallucination Detection Engine</h3>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {activeTiers.map(t => (
-            <span key={t} className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded border ${
+            <span key={t} className={`text-[9px] sm:text-[10px] font-bold font-mono px-1.5 sm:px-2 py-0.5 rounded border ${
               t === 'T3' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600'
               : t === 'T2' ? 'border-blue-500/30 bg-blue-500/10 text-blue-600'
               : 'border-gray-300 bg-gray-100 text-gray-600'
@@ -592,12 +609,12 @@ function HrsDetectionPanel({ hrsScores, agents }) {
               {t === 'T1' ? 'T1: Math' : t === 'T2' ? 'T2: Contracts' : 'T3: Verifier'}
             </span>
           ))}
-          <span className="text-[10px] font-mono text-gray-500">
+          <span className="text-[9px] sm:text-[10px] font-mono text-gray-500">
             Accuracy: {maxHrs?.accuracy || '~75-85%'}
           </span>
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {AGENT_ORDER.map(id => {
           const hrs = hrsScores[id];
           const agent = agents[id];
@@ -668,9 +685,9 @@ export default function LiveSwarmView() {
   return (
     <div className="h-full w-full bg-transparent overflow-y-auto">
       <HallucinationAlert alerts={alerts} agents={agents} systemStatus={systemStatus} killAgent={killAgent} killAll={killAll} dismissAlert={dismissAlert} clearAlerts={clearAlerts} />
-      <div className="w-full h-full px-6 py-6 space-y-5">
+      <div className="w-full h-full px-3 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-5">
         {/* Stats Row */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
           <StatCard icon={Zap} label="Total Tokens" value={totalTokensFormatted} color="#8B5CF6" subtext="Cumulative across all agents" />
           <StatCard icon={Activity} label="Active Agents" value={`${activeAgentCount} / 4`} color={activeAgentCount === 4 ? '#10B981' : activeAgentCount > 0 ? '#F59E0B' : '#EF4444'} subtext={allKilled ? 'Swarm terminated' : 'Agents online'} />
           <StatCard icon={AlertTriangle} label="Active Alerts" value={String(activeAlertCount)} color={activeAlertCount > 0 ? '#EF4444' : '#10B981'} subtext={activeAlertCount > 0 ? 'Action required' : 'No active alerts'} />

@@ -95,7 +95,7 @@ export function CommandDock({
   };
   
   return (
-    <div className="px-6 md:px-16 lg:px-24 pb-6 pt-4">
+    <div className="px-3 sm:px-6 md:px-16 lg:px-24 pb-4 sm:pb-6 pt-3 sm:pt-4">
       <div 
         className={cn(
           "relative obsidian-glass focus-glow transition-all duration-300",
@@ -103,7 +103,7 @@ export function CommandDock({
         )}
       >
         {/* Main input container */}
-        <div className="flex items-end gap-3 p-4">
+        <div className="flex items-end gap-2 sm:gap-3 p-3 sm:p-4">
           {/* Left action icons */}
           <div className="flex items-center gap-1 pb-1">
             <input 
