@@ -19,7 +19,7 @@ export const getBackendUrl = () => {
   if (envUrl && envUrl.trim()) {
     return envUrl.trim().replace(/\/+$/, '');
   }
-  return 'http://localhost:4000';
+  return 'https://synapse-os-x8qk.onrender.com';
 };
 
 export const setBackendUrl = (url) => {
