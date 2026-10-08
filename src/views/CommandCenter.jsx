@@ -7,7 +7,7 @@ import {
 import { useSynapse } from '../context/SynapseContext';
 import Modal from '../components/common/Modal';
 import { useAgentStats } from '../hooks/useAgentStats';
-import { BACKEND_URL } from '../utils/constants';
+import { BACKEND_URL, getBackendUrl } from '../utils/constants';
 
 // ── Default Connected AI Projects (Starter data) ──
 const DEFAULT_CONNECTED_PROJECTS = [
@@ -117,7 +117,7 @@ const ImportProjectModal = ({ isOpen, onClose, onImport, addToast }) => {
   const [pingResult, setPingResult] = useState(null);
   const [copiedWebhook, setCopiedWebhook] = useState(false);
 
-  const webhookIngestUrl = `${BACKEND_URL}/api/projects/webhook-ingest`;
+  const webhookIngestUrl = `${getBackendUrl()}/api/projects/webhook-ingest`;
 
   const handleTypeChange = (type) => {
     setFormData(prev => ({
@@ -138,7 +138,7 @@ const ImportProjectModal = ({ isOpen, onClose, onImport, addToast }) => {
     setPingResult(null);
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/projects/ping`, {
+      const res = await fetch(`${getBackendUrl()}/api/projects/ping`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: formData.url.trim() }),
@@ -446,7 +446,7 @@ const ProjectMonitorModal = ({ project, isOpen, onClose, onSendTestEvent, onRefr
 
   if (!project) return null;
 
-  const webhookIngestUrl = `${BACKEND_URL}/api/projects/webhook-ingest`;
+  const webhookIngestUrl = `${getBackendUrl()}/api/projects/webhook-ingest`;
 
   const copyWebhookUrl = () => {
     navigator.clipboard.writeText(webhookIngestUrl);
@@ -780,7 +780,7 @@ const CommandCenter = () => {
     let result = null;
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/projects/ping`, {
+      const res = await fetch(`${getBackendUrl()}/api/projects/ping`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: project.url }),
@@ -863,7 +863,7 @@ const CommandCenter = () => {
     };
 
     try {
-      await fetch(`${BACKEND_URL}/api/projects/webhook-ingest`, {
+      await fetch(`${getBackendUrl()}/api/projects/webhook-ingest`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1305,7 +1305,7 @@ const CommandCenter = () => {
                   </div>
                   <ol className="text-xs text-black/70 dark:text-white/70 space-y-2 list-decimal list-inside leading-relaxed">
                     <li>In your n8n workflow canvas, add an <strong>HTTP Request</strong> node at key AI execution stages.</li>
-                    <li>Set the Method to <strong>POST</strong> and URL to <code className="font-mono bg-black/5 dark:bg-white/10 px-1 py-0.5">{`${BACKEND_URL}/api/projects/webhook-ingest`}</code>.</li>
+                    <li>Set the Method to <strong>POST</strong> and URL to <code className="font-mono bg-black/5 dark:bg-white/10 px-1 py-0.5">{`${getBackendUrl()}/api/projects/webhook-ingest`}</code>.</li>
                     <li>Send JSON payload with <code className="font-mono">{`{ "projectId": "your-id", "eventName": "agent.inference", "payload": { ... } }`}</code>.</li>
                     <li>Synapse Observatory automatically captures and monitors latency, token usage, and status in real-time.</li>
                   </ol>

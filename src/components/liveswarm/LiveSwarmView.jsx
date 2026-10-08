@@ -11,11 +11,12 @@ import {
   Brain, Activity, AlertTriangle, DollarSign, Wifi, WifiOff, Zap,
   Cpu, Clock, Crosshair, RotateCcw, Radio, BarChart3,
   StopCircle, ShieldAlert, Wrench, PlayCircle, Skull, X, TrendingUp,
-  Shield, Eye,
+  Shield, Eye, Server, Check,
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts';
+import { getBackendUrl, setBackendUrl } from '../../utils/constants';
 import './LiveSwarmView.css';
 
 // ═══════════════════════════════════════
@@ -665,9 +666,51 @@ function HrsDetectionPanel({ hrsScores, agents }) {
 // ═══════════════════════════════════════════════════════════
 export default function LiveSwarmView() {
   const {
-    agents, events, alerts, tokenHistory, hrsScores, systemStatus, isConnected,
+    agents, events, alerts, tokenHistory, hrsScores, systemStatus, isConnected, backendUrl,
     killAgent, killAll, restartAgent, restartAll, resumeAgent, triggerRogue, dismissAlert, clearAlerts,
   } = useSwarmSocket();
+
+  const [showConfigModal, setShowConfigModal] = useState(false);
+  const [urlInput, setUrlInput] = useState(() => localStorage.getItem('synapse_backend_url') || '');
+  const [isSaved, setIsSaved] = useState(false);
+  const [testResult, setTestResult] = useState(null);
+  const [isTesting, setIsTesting] = useState(false);
+
+  const handleTestBackend = async () => {
+    const url = (urlInput.trim() || backendUrl || getBackendUrl()).replace(/\/+$/, '');
+    setIsTesting(true);
+    setTestResult(null);
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const res = await fetch(`${url}/api/health`, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        setTestResult({ ok: true, message: `Connected! Server alive (${url})` });
+      } else {
+        setTestResult({ ok: false, message: `Server returned HTTP ${res.status}` });
+      }
+    } catch (e) {
+      setTestResult({
+        ok: false,
+        message: e.name === 'AbortError' 
+          ? 'Timeout after 6s. If Render is waking up, wait ~30s.'
+          : `Failed: ${e.message}`
+      });
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
+  const handleSaveUrl = () => {
+    const cleaned = urlInput.trim().replace(/\/+$/, '');
+    setBackendUrl(cleaned);
+    setIsSaved(true);
+    setTimeout(() => {
+      setIsSaved(false);
+      setShowConfigModal(false);
+    }, 1200);
+  };
 
   const agentList = AGENT_ORDER.map(id => agents[id]).filter(Boolean);
   const activeAgentCount = agentList.filter(a => a.status !== 'killed').length;
@@ -685,7 +728,130 @@ export default function LiveSwarmView() {
   return (
     <div className="h-full w-full bg-transparent overflow-y-auto">
       <HallucinationAlert alerts={alerts} agents={agents} systemStatus={systemStatus} killAgent={killAgent} killAll={killAll} dismissAlert={dismissAlert} clearAlerts={clearAlerts} />
+
+      {/* Backend Configuration Modal */}
+      {showConfigModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-white rounded-xl shadow-2xl border border-black/10 p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-black/5 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-black/5 flex items-center justify-center text-gray-700">
+                  <Server size={15} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900">Backend Server Uplink</h3>
+                  <p className="text-[10px] text-gray-500">Connect to your deployed Render or cloud server</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowConfigModal(false)}
+                className="p-1 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-black/5 transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="text-[11px] font-semibold text-gray-600 block mb-1">
+                  Backend Service URL
+                </label>
+                <input
+                  type="text"
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  placeholder="e.g. https://synapse-os-backend.onrender.com"
+                  className="w-full bg-black/[0.04] border border-black/15 text-gray-900 focus:border-black/40 rounded-lg px-3 py-2 text-xs font-mono outline-none transition-colors"
+                />
+                <div className="text-[10px] text-gray-500 mt-1">
+                  Current active: <span className="font-mono text-gray-700">{backendUrl}</span>
+                </div>
+              </div>
+
+              {testResult && (
+                <div className={`p-2.5 rounded-lg text-xs font-mono border flex items-center gap-2 ${
+                  testResult.ok
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                    : 'bg-amber-50 border-amber-200 text-amber-700'
+                }`}>
+                  {testResult.ok ? <Wifi size={13} className="shrink-0" /> : <AlertTriangle size={13} className="shrink-0" />}
+                  <span className="break-all">{testResult.message}</span>
+                </div>
+              )}
+
+              <div className="p-2.5 bg-gray-50 rounded-lg border border-black/5 text-[11px] text-gray-600 space-y-1">
+                <div className="font-semibold text-gray-800">💡 Mobile & Multi-Device Demo:</div>
+                <div>• Paste your <strong>Render Web Service URL</strong> to connect directly from any phone or external browser.</div>
+                <div>• Even if Render takes 40s to cold-start, the swarm will simulate telemetry autonomously so it never freezes.</div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-black/5">
+              <button
+                type="button"
+                onClick={handleTestBackend}
+                disabled={isTesting}
+                className="px-3 py-1.5 text-xs font-medium bg-black/5 hover:bg-black/10 rounded-lg text-gray-700 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <RotateCcw size={12} className={isTesting ? 'animate-spin' : ''} />
+                {isTesting ? 'Pinging...' : 'Test Connection'}
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowConfigModal(false)}
+                  className="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-black/5 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveUrl}
+                  className="px-4 py-1.5 text-xs font-bold bg-black text-white hover:bg-black/80 rounded-lg shadow-sm transition-colors flex items-center gap-1.5"
+                >
+                  {isSaved ? <Check size={13} /> : null}
+                  {isSaved ? 'Saved!' : 'Save & Connect'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="w-full h-full px-3 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-5">
+        {/* Uplink Status Banner */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-3.5 py-2.5 rounded-lg bg-black/[0.03] border border-black/10 backdrop-blur-sm">
+          <div className="flex items-center gap-2 min-w-0">
+            {isConnected ? (
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                LIVE CLOUD BACKEND
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/10 border border-amber-500/30 text-amber-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                AUTONOMOUS SWARM SIMULATION
+              </span>
+            )}
+            <span className="text-[11px] font-mono text-gray-500 truncate">
+              {isConnected ? backendUrl : 'Running in-browser fallback engine — 100% active'}
+            </span>
+          </div>
+
+          <button
+            onClick={() => {
+              setUrlInput(localStorage.getItem('synapse_backend_url') || '');
+              setTestResult(null);
+              setShowConfigModal(true);
+            }}
+            className="self-start sm:self-auto inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded bg-white hover:bg-gray-100 border border-black/10 text-gray-700 shadow-sm transition-colors shrink-0"
+          >
+            <Server size={12} className="text-gray-500" />
+            <span>Configure Backend Uplink</span>
+          </button>
+        </div>
+
         {/* Stats Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
           <StatCard icon={Zap} label="Total Tokens" value={totalTokensFormatted} color="#8B5CF6" subtext="Cumulative across all agents" />

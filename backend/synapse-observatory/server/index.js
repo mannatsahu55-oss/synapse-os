@@ -20,28 +20,15 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: (origin, callback) => {
-      if (!origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) || /\.vercel\.app$/.test(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST'],
-    credentials: true,
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   },
   transports: ['websocket', 'polling'],
 });
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) || /\.vercel\.app$/.test(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
 app.use(express.json());
 
@@ -105,6 +92,10 @@ app.post('/api/restart-all', (req, res) => {
 app.post('/api/demo/trigger-rogue', (req, res) => {
   simulator.triggerRogue();
   res.json({ success: true, message: 'Demo rogue event triggered.' });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 app.get('/api/status', (req, res) => {

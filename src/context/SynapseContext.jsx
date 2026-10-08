@@ -3,7 +3,7 @@ import { io as socketIO } from 'socket.io-client';
 import AgentSimulator from '../engine/AgentSimulator';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
-import { BACKEND_URL } from '../utils/constants';
+import { BACKEND_URL, getBackendUrl } from '../utils/constants';
 
 const SynapseContext = createContext(null);
 
@@ -234,11 +234,20 @@ export function SynapseProvider({ children }) {
   // LIVE AI — Socket.IO connection for real-time AI events
   // Connects to backend:4000 and receives live: prefixed events
   // as the AI orchestrator processes real Gemini API calls
-  // ═══════════════════════════════════════════════════════════
+  const [activeBackendUrl, setActiveBackendUrl] = useState(() => getBackendUrl());
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      setActiveBackendUrl(getBackendUrl());
+    };
+    window.addEventListener('synapse_backend_url_change', handleUrlChange);
+    return () => window.removeEventListener('synapse_backend_url_change', handleUrlChange);
+  }, []);
+
   const socketRef = useRef(null);
 
   useEffect(() => {
-    const socket = socketIO(BACKEND_URL, {
+    const socket = socketIO(activeBackendUrl, {
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000,
@@ -247,7 +256,7 @@ export function SynapseProvider({ children }) {
     socketRef.current = socket;
 
     socket.on('connect', () => {
-      console.log('[Socket.IO] Connected to Synapse backend');
+      console.log('[Socket.IO] Connected to Synapse backend:', activeBackendUrl);
     });
 
     // ── Live AI Activity Logs ──
@@ -340,7 +349,7 @@ export function SynapseProvider({ children }) {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeBackendUrl]);
 
   // ── Toast System ──
   const addToast = useCallback((type, title, message) => {
@@ -391,7 +400,7 @@ export function SynapseProvider({ children }) {
       // through a dedicated EventSource or WebSocket connection
       
       // For simplicity and reliability: We use fetch + poll Socket.IO events
-      const response = await fetch(`${BACKEND_URL}/api/ai/scenario`, {
+      const response = await fetch(`${getBackendUrl()}/api/ai/scenario`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scenarioId, apiKey }),
@@ -441,7 +450,7 @@ export function SynapseProvider({ children }) {
     addToast('info', '🧠 Custom AI Scenario', 'Agents are analyzing your prompt...');
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/ai/custom`, {
+      const response = await fetch(`${getBackendUrl()}/api/ai/custom`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt, apiKey }),

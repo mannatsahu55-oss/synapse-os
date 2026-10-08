@@ -12,7 +12,7 @@
     transition: all 0.3s ease;
   }
   
-  :global(.dark) .swarm-glass-card {
+  .dark .swarm-glass-card {
     background: rgba(0, 0, 0, 0.8);
     border-color: rgba(255, 255, 255, 0.1);
     box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.06);
@@ -74,7 +74,7 @@
     animation: swarmEventSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   }
-  :global(.dark) .swarm-event-row { border-color: rgba(255, 255, 255, 0.04); }
+  .dark .swarm-event-row { border-color: rgba(255, 255, 255, 0.04); }
   @keyframes swarmEventSlideIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
   
   .swarm-confidence-bar {
@@ -83,7 +83,7 @@
     background: rgba(0, 0, 0, 0.05);
     overflow: hidden;
   }
-  :global(.dark) .swarm-confidence-bar { background: rgba(255, 255, 255, 0.05); }
+  .dark .swarm-confidence-bar { background: rgba(255, 255, 255, 0.05); }
   
   .swarm-confidence-fill {
     height: 100%;
